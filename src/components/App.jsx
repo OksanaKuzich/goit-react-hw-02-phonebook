@@ -1,83 +1,51 @@
 import React, { Component } from 'react';
 import { nanoid } from 'nanoid';
+import { ContactForm } from './ContactForm/ContactForm';
+import { Filter } from './Filter/Filter';
+import { ContactList } from './ContactList/ContactList';
 
 export class App extends Component {
   state = {
-    contacts: [],
-    name: '',
-    number: '',
+    contacts: [
+      { id: 'id-1', name: 'Rosie Simpson', number: '459-12-56' },
+      { id: 'id-2', name: 'Hermione Kline', number: '443-89-12' },
+      { id: 'id-3', name: 'Eden Clements', number: '645-17-79' },
+      { id: 'id-4', name: 'Annie Copeland', number: '227-91-26' },
+    ],
+    filter: '',
   };
 
-  handleInputName = e => {
-    this.setState({ name: e.currentTarget.value });
-  };
-
-  handleInputNumber = e => {
-    this.setState({ number: e.currentTarget.value });
-  };
-
-  addTodo = e => {
-    e.preventDefault();
-
+  addContacts = (name, number) => {
     const contact = {
       id: nanoid(),
-      name: this.state.name,
-      number: this.state.number,
+      name,
+      number,
     };
 
     this.setState(({ contacts }) => ({
       contacts: [contact, ...contacts],
     }));
+  };
 
-    this.setState({ name: '' });
-    this.setState({ number: '' });
+  changeFilter = e => {
+    this.setState({ filter: e.currentTarget.value });
   };
 
   render() {
+    const { contacts, filter } = this.state;
+    const normalizeFilter = filter.toLowerCase();
+    const visibleContacts = contacts.filter(contact =>
+      contact.name.toLowerCase().includes(normalizeFilter)
+    );
+
     return (
-      <>
-        <h3>Phonebook</h3>
-        <form onSubmit={this.addTodo}>
-          <label>
-            Name
-            <input
-              type="text"
-              name="name"
-              pattern="^[a-zA-Zа-яА-Я]+(([' -][a-zA-Zа-яА-Я ])?[a-zA-Zа-яА-Я]*)*$"
-              title="Name may contain only letters, apostrophe, dash and spaces. For example Adrian, Jacob Mercer, Charles de Batz de Castelmore d'Artagnan"
-              required
-              placeholder="Ivan"
-              value={this.state.name}
-              onChange={this.handleInputName}
-            />
-          </label>
-          <label>
-            Number
-            <input
-              type="tel"
-              name="number"
-              pattern="\+?\d{1,4}?[-.\s]?\(?\d{1,3}?\)?[-.\s]?\d{1,4}[-.\s]?\d{1,4}[-.\s]?\d{1,9}"
-              title="Phone number must be digits and can contain spaces, dashes, parentheses and can start with +"
-              required
-              placeholder="111-11-11"
-              value={this.state.number}
-              onChange={this.handleInputNumber}
-            />
-          </label>
-          <button type="submit">Add contact</button>
-        </form>
-        <h3>Contacts</h3>
-        <ul>
-          {this.state.contacts.map(({ id, name, number }) => {
-            return (
-              <li key={id}>
-                {name}: {number}
-                <button type="button">Delete</button>
-              </li>
-            );
-          })}
-        </ul>
-      </>
+      <div>
+        <h1>Phonebook</h1>
+        <ContactForm addContacts={this.addContacts} />
+        <h2>Contacts</h2>
+        <Filter valueFilter={filter} onChangeFilter={this.changeFilter} />
+        <ContactList visible={visibleContacts} />
+      </div>
     );
   }
 }
