@@ -1,20 +1,32 @@
 import PropTypes from 'prop-types';
+import {
+  ListContacts,
+  ButtonDelete,
+  ListContactsItem,
+} from './ContactList.styled';
 
-export const ContactList = ({ visible }) => {
+export const ContactList = ({ visible, onDeleteContact }) => {
   return (
-    <ul>
+    <ListContacts>
       {visible.map(({ id, name, number }) => {
         return (
-          <li key={id}>
+          <ListContactsItem key={id}>
             {name}: {number}
-            <button type="button">Delete</button>
-          </li>
+            <ButtonDelete
+              type="button"
+              onClick={() => onDeleteContact(id)}
+              dataid={id}
+            >
+              Delete
+            </ButtonDelete>
+          </ListContactsItem>
         );
       })}
-    </ul>
+    </ListContacts>
   );
 };
 
 ContactList.propTypes = {
   visible: PropTypes.array.isRequired,
+  onDeleteContact: PropTypes.func.isRequired,
 };

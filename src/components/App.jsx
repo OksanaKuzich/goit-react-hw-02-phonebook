@@ -3,14 +3,15 @@ import { nanoid } from 'nanoid';
 import { ContactForm } from './ContactForm/ContactForm';
 import { Filter } from './Filter/Filter';
 import { ContactList } from './ContactList/ContactList';
+import { GlobalStyle } from './Utilit/GlobalStyle';
 
 export class App extends Component {
   state = {
     contacts: [
-      { id: 'id-1', name: 'Rosie Simpson', number: '459-12-56' },
-      { id: 'id-2', name: 'Hermione Kline', number: '443-89-12' },
-      { id: 'id-3', name: 'Eden Clements', number: '645-17-79' },
-      { id: 'id-4', name: 'Annie Copeland', number: '227-91-26' },
+      // { id: 'id-1', name: 'Rosie Simpson', number: '459-12-56' },
+      // { id: 'id-2', name: 'Hermione Kline', number: '443-89-12' },
+      // { id: 'id-3', name: 'Eden Clements', number: '645-17-79' },
+      // { id: 'id-4', name: 'Annie Copeland', number: '227-91-26' },
     ],
     filter: '',
   };
@@ -22,8 +23,20 @@ export class App extends Component {
       number,
     };
 
-    this.setState(({ contacts }) => ({
-      contacts: [contact, ...contacts],
+    const isDublicate = this.state.contacts.some(
+      contact => contact.name.toLowerCase() === name.toLowerCase()
+    );
+
+    isDublicate
+      ? alert(`${name} is already in contacts`)
+      : this.setState(({ contacts }) => ({
+          contacts: [contact, ...contacts],
+        }));
+  };
+
+  deleteContact = id => {
+    this.setState(prevState => ({
+      contacts: prevState.contacts.filter(contact => contact.id !== id),
     }));
   };
 
@@ -39,12 +52,23 @@ export class App extends Component {
     );
 
     return (
-      <div>
+      <div className="container">
         <h1>Phonebook</h1>
         <ContactForm addContacts={this.addContacts} />
         <h2>Contacts</h2>
-        <Filter valueFilter={filter} onChangeFilter={this.changeFilter} />
-        <ContactList visible={visibleContacts} />
+        {contacts.length === 0 ? (
+          <p>Please, enter your first contact</p>
+        ) : (
+          <>
+            <Filter valueFilter={filter} onChangeFilter={this.changeFilter} />
+            <ContactList
+              visible={visibleContacts}
+              onDeleteContact={this.deleteContact}
+            />
+          </>
+        )}
+
+        <GlobalStyle />
       </div>
     );
   }
