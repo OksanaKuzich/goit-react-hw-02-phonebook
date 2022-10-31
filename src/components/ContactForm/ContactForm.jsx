@@ -13,12 +13,12 @@ export class ContactForm extends Component {
     number: '',
   };
 
-  handleInputName = e => {
-    this.setState({ name: e.currentTarget.value });
-  };
+  static propTypes = {
+  addContacts: PropTypes.func.isRequired,
+};
 
-  handleInputNumber = e => {
-    this.setState({ number: e.currentTarget.value });
+  handleInput = e => {
+    this.setState({ [e.currentTarget.name]: e.currentTarget.value });
   };
 
   addContacts = e => {
@@ -44,7 +44,7 @@ export class ContactForm extends Component {
             required
             placeholder="Ivan"
             value={name}
-            onChange={this.handleInputName}
+            onChange={this.handleInput}
           />
         </LabelStyles>
         <LabelStyles>
@@ -57,7 +57,7 @@ export class ContactForm extends Component {
             required
             placeholder="111-11-11"
             value={number}
-            onChange={this.handleInputNumber}
+            onChange={this.handleInput}
           />
         </LabelStyles>
         <ButtonAdd type="submit">Add contact</ButtonAdd>
@@ -65,7 +65,3 @@ export class ContactForm extends Component {
     );
   }
 }
-
-ContactForm.propTypes = {
-  addContacts: PropTypes.func.isRequired,
-};
